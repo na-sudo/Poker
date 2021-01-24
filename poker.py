@@ -26,7 +26,7 @@ class Poker():
     def set_hand(self, cards :str):
         self.hand = self.str2arr(cards)
 
-    def set_boad(self, cards :str):
+    def set_board(self, cards :str):
         self.board = self.str2arr(cards)
 
     def handrank(self, hand='hand string'):
@@ -89,6 +89,6 @@ class Poker():
 if __name__ == '__main__':
     po = Poker()
     po.set_hand(input('hand(ex: AdKh): '))
-    po.set_boad(input('board(ex: QhJhTh4c8s): '))
+    po.set_board(input('board(ex: QhJhTh4c8s): '))
     result = po.handrank()
     print(po.RANK_TEXT[result[0]], result)

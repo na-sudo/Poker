@@ -1,7 +1,7 @@
 
 
 import numpy as np
-
+import pandas as pd
 
 
 
@@ -94,7 +94,7 @@ BTNopen = np.array(
 def main():
     print('BTNopen')
     act_str = input('BB 3bet or call :')
-    if act_str == '3bet':
+    if act_str == '3bet' or act_str == '3':
         act = 3
         a = np.where(BTNopen==3, 1, 0)
         b = np.where(BBvsBTN>=3, 1, 0)
@@ -102,11 +102,33 @@ def main():
         act = 2
         a = np.where(BTNopen>=2, 1, 0)
         b = np.where(BBvsBTN==2, 1, 0)
+    print('BTN')
     print(a)
+    print('BB')
     print(b)
-    print('aaaaaa')
-    print(a*probability)
-    
+    a_prb = a*probability
+    b_prb = b*probability
+
+    li = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+    '''
+    # don't use pandas for print.
+    print('   BTN  BB')
+    for i in range(13):
+        print(
+            '{} :{:3} {:3}'.format(
+                li[i],
+                np.round(np.sum(a_prb, axis=0)[i] + np.sum(a_prb, axis=1)[i] - np.diag(a_prb)[i], 2),
+                np.round(np.sum(b_prb, axis=0)[i] + np.sum(b_prb, axis=1)[i] - np.diag(b_prb)[i], 2)
+            ),
+        )
+    '''
+    # use pandas for print.
+    a_hit = np.sum(a_prb, axis=0) + np.sum(a_prb, axis=1) - np.diag(a_prb)
+    b_hit = np.sum(b_prb, axis=0) + np.sum(b_prb, axis=1) - np.diag(b_prb)
+    df = pd.DataFrame({'BTN':a_hit, 'BB':b_hit}, index=li)
+    print(df)
+
+
 
 
 if __name__ == '__main__':

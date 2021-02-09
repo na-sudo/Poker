@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-
+from poker import Poker
 
 suit = np.zeros((13,13),dtype=int)
 for i in range(13):
@@ -102,6 +102,7 @@ def main():
         act = 2
         a = np.where(BTNopen>=2, 1, 0)
         b = np.where(BBvsBTN==2, 1, 0)
+
     print('BTN')
     print(a)
     print('BB')
@@ -110,6 +111,7 @@ def main():
     b_prb = b*probability
 
     li = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+
     '''
     # don't use pandas for print.
     print('   BTN  BB')
@@ -125,8 +127,23 @@ def main():
     # use pandas for print.
     a_hit = np.sum(a_prb, axis=0) + np.sum(a_prb, axis=1) - np.diag(a_prb)
     b_hit = np.sum(b_prb, axis=0) + np.sum(b_prb, axis=1) - np.diag(b_prb)
-    df = pd.DataFrame({'BTN':a_hit, 'BB':b_hit}, index=li)
-    print(df)
+    df_a = pd.DataFrame({'hit':a_hit}, index=li)
+    df_b = pd.DataFrame({'hit':b_hit}, index=li)
+
+    po = Poker()
+    po.set_board(input('flop board(ex: QhJhTh): '))
+    board_num = np.sum(po.board, axis=0)
+    df_a['quads'] = np.diag(a_prb) * np.where(board_num[::-1]==2, 1, 0)
+    df_a['set'] = np.diag(a_prb) * np.where(board_num[::-1]==1, 1, 0)
+    single = np.sum(a_prb, axis=0) + np.sum(a_prb, axis=1) - 2*np.diag(a_prb)
+    df_a['trips'] = single * np.where(board_num[::-1]==2, 1, 0)
+
+    df_b['quads'] = np.diag(b_prb) * np.where(board_num[::-1]==2, 1, 0)
+    df_b['set'] = np.diag(b_prb) * np.where(board_num[::-1]==1, 1, 0)
+    single = np.sum(b_prb, axis=0) + np.sum(b_prb, axis=1) - 2*np.diag(b_prb)
+    df_b['trips'] = single * np.where(board_num[::-1]==2, 1, 0)
+    print(df_a)
+    print(df_b)
 
 
 

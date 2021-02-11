@@ -24,7 +24,6 @@ for i in range(13):
             pair[i,j] = 1
 
 probability = np.zeros((13,13), dtype=np.float)
-print(probability)
 for i in range(13):
     for j in range(13):
         if i==j:
@@ -133,14 +132,16 @@ def main():
     po = Poker()
     po.set_board(input('flop board(ex: QhJhTh): '))
     board_num = np.sum(po.board, axis=0)
-    df_a['quads'] = np.diag(a_prb) * np.where(board_num[::-1]==2, 1, 0)
-    df_a['set'] = np.diag(a_prb) * np.where(board_num[::-1]==1, 1, 0)
     single = np.sum(a_prb, axis=0) + np.sum(a_prb, axis=1) - 2*np.diag(a_prb)
+    df_a['quads'] = np.diag(a_prb) * np.where(board_num[::-1]==2, 1, 0)
+    df_a['quads'] = single * np.where(board_num[::-1]==3, 1, 0)
+    df_a['set'] = np.diag(a_prb) * np.where(board_num[::-1]==1, 1, 0)
     df_a['trips'] = single * np.where(board_num[::-1]==2, 1, 0)
 
-    df_b['quads'] = np.diag(b_prb) * np.where(board_num[::-1]==2, 1, 0)
-    df_b['set'] = np.diag(b_prb) * np.where(board_num[::-1]==1, 1, 0)
     single = np.sum(b_prb, axis=0) + np.sum(b_prb, axis=1) - 2*np.diag(b_prb)
+    df_b['quads'] = np.diag(b_prb) * np.where(board_num[::-1]==2, 1, 0)
+    df_b['quads'] = single * np.where(board_num[::-1]==3, 1, 0)
+    df_b['set'] = np.diag(b_prb) * np.where(board_num[::-1]==1, 1, 0)
     df_b['trips'] = single * np.where(board_num[::-1]==2, 1, 0)
     print(df_a)
     print(df_b)

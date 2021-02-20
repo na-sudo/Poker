@@ -5,33 +5,14 @@ import pandas as pd
 
 from poker import Poker
 
-suit = np.zeros((13,13),dtype=int)
-for i in range(13):
-    for j in range(13):
-        if i<j:
-            suit[i,j] = 1
+pair = np.eye(13, dtype=bool)
+#print(pair)
+suit = ~np.tri(13, dtype=bool)
+#print(suit)
+offsuit = np.tri(13, dtype=bool) ^ np.eye(13, dtype=bool)
+#print(offsuit)
 
-offsuit = np.zeros((13,13),dtype=int)
-for i in range(13):
-    for j in range(13):
-        if i>j:
-            offsuit[i,j] = 1
-
-pair = np.zeros((13,13),dtype=int)
-for i in range(13):
-    for j in range(13):
-        if i==j:
-            pair[i,j] = 1
-
-probability = np.zeros((13,13), dtype=np.float)
-for i in range(13):
-    for j in range(13):
-        if i==j:
-            probability[i,j] = 0.453
-        elif i<j:
-            probability[i,j] = 0.302
-        elif i>j:
-            probability[i,j] = 0.905
+probability = pair * 0.453 + suit * 0.302 + offsuit * 0.905
 
 
 BTNopen = np.array(
@@ -67,26 +48,6 @@ BBvsBTN = np.array(
      [0,0,0,0,0,0,0,0,0,0,0,2,0],
      [0,0,0,0,0,0,0,0,0,0,0,0,2],)
      , dtype=int)
-
-
-'''
-BTNopen = np.array(
-    ([0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],
-     [0,0,0,0,0,0,0,0,0,0,0,0,0],)
-     , dtype=int)
-'''
-
 
 
 

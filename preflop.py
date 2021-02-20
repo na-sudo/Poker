@@ -85,8 +85,8 @@ def main():
         )
     '''
     # use pandas for print.
-    a_hit = np.sum(a_prb, axis=0) + np.sum(a_prb, axis=1) - np.diag(a_prb)
-    b_hit = np.sum(b_prb, axis=0) + np.sum(b_prb, axis=1) - np.diag(b_prb)
+    a_hit = np.sum(a_prb*(~pair), axis=0) + np.sum(a_prb*(~pair), axis=1)
+    b_hit = np.sum(b_prb*(~pair), axis=0) + np.sum(b_prb*(~pair), axis=1)
     df_a = pd.DataFrame({'hit':a_hit}, index=li)
     df_b = pd.DataFrame({'hit':b_hit}, index=li)
 

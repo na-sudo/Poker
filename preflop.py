@@ -50,7 +50,6 @@ BBvsBTN = np.array(
      , dtype=int)
 
 
-
 def main():
     print('BTNopen')
     act_str = input('BB 3bet or call :')
@@ -72,18 +71,6 @@ def main():
 
     li = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 
-    '''
-    # don't use pandas for print.
-    print('   BTN  BB')
-    for i in range(13):
-        print(
-            '{} :{:3} {:3}'.format(
-                li[i],
-                np.round(np.sum(a_prb, axis=0)[i] + np.sum(a_prb, axis=1)[i] - np.diag(a_prb)[i], 2),
-                np.round(np.sum(b_prb, axis=0)[i] + np.sum(b_prb, axis=1)[i] - np.diag(b_prb)[i], 2)
-            ),
-        )
-    '''
     # use pandas for print.
     a_hit = np.sum(a_prb*(~pair), axis=0) + np.sum(a_prb*(~pair), axis=1)
     b_hit = np.sum(b_prb*(~pair), axis=0) + np.sum(b_prb*(~pair), axis=1)
@@ -93,21 +80,21 @@ def main():
     po = Poker()
     po.set_board(input('flop board(ex: QhJhTh): '))
     board_num = np.sum(po.board, axis=0)
-    single = np.sum(a_prb, axis=0) + np.sum(a_prb, axis=1) - 2*np.diag(a_prb)
-    df_a['quads'] = np.diag(a_prb) * np.where(board_num[::-1]==2, 1, 0)
-    df_a['quads'] = single * np.where(board_num[::-1]==3, 1, 0)
-    df_a['set'] = np.diag(a_prb) * np.where(board_num[::-1]==1, 1, 0)
-    df_a['trips'] = single * np.where(board_num[::-1]==2, 1, 0)
+    single = np.sum(a_prb*(~pair), axis=0) + np.sum(a_prb*(~pair), axis=1)
+    df_a['quads'] = np.diag(a_prb) * np.where(board_num==2, 1, 0)
+    df_a['quads'] = single * np.where(board_num==3, 1, 0)
+    #df_a['set'] = np.diag(a_prb) * np.where(board_num==1, 1, 0)
+    #df_a['trips'] = single * np.where(board_num==2, 1, 0)
+    df_a['3 of a kind'] = np.diag(a_prb) * np.where(board_num==1, 1, 0) + single * np.where(board_num==2, 1, 0)
 
-    single = np.sum(b_prb, axis=0) + np.sum(b_prb, axis=1) - 2*np.diag(b_prb)
-    df_b['quads'] = np.diag(b_prb) * np.where(board_num[::-1]==2, 1, 0)
-    df_b['quads'] = single * np.where(board_num[::-1]==3, 1, 0)
-    df_b['set'] = np.diag(b_prb) * np.where(board_num[::-1]==1, 1, 0)
-    df_b['trips'] = single * np.where(board_num[::-1]==2, 1, 0)
+    single = np.sum(b_prb*(~pair), axis=0) + np.sum(b_prb*(~pair), axis=1)
+    df_b['quads'] = np.diag(b_prb) * np.where(board_num==2, 1, 0)
+    df_b['quads'] = single * np.where(board_num==3, 1, 0)
+    #df_b['set'] = np.diag(b_prb) * np.where(board_num==1, 1, 0)
+    #df_b['trips'] = single * np.where(board_num==2, 1, 0)
+    df_b['3 of a kind'] = np.diag(b_prb) * np.where(board_num==1, 1, 0) + single * np.where(board_num==2, 1, 0)
     print(df_a)
     print(df_b)
-
-
 
 
 if __name__ == '__main__':

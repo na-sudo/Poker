@@ -2,7 +2,6 @@
 
 import numpy as np
 
-
 class Poker():
     def __init__(self):
         self.hand = np.zeros((4,13), dtype=int)
@@ -12,8 +11,7 @@ class Poker():
             'high card', 'a pair', 'two pair', 'three of a kind', 'straight',
             'flush', 'full house', 'quads', 'straight flush']
         self.SUIT = ['c', 'd', 'h', 's']
-        self.NUMBER = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J',
-                       'Q', 'K', 'A']
+        self.NUMBER = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 
     def str2arr(self, cards):
         arr = np.zeros((4,13), dtype=int)
@@ -36,52 +34,57 @@ class Poker():
             pass
         res = [0, 0]
         total = hand + self.board
+        print('total')
+        print(total)
 
         total_num = np.sum(total, axis=0)
         if np.max(total_num, axis=0) == 4:
-            buffer1 = np.where(total_num == 4)[0][-1]
-            buffer2 = np.where(total_num != 4)[0][-1]
-            res = [7, buffer1*100 + buffer2]
+            buffer1 = np.where(total_num == 4)[0][0]
+            buffer2 = np.where(total_num >= 1)[0].tolist()
+            buffer2.remove(buffer1)
+            res = [7, (13 - buffer1)*100 + 13 - buffer2[0]]
         elif np.max(total_num, axis=0) == 3:
-            buffer1 = np.where(total_num == 3)[0][-1]
-            buffer2 = np.where(total_num >= 2)
+            buffer1 = np.where(total_num == 3)[0][0]
+            buffer2 = np.where(total_num >= 2)[0].tolist()
             if len(buffer2) >= 2:
                 buffer2.remove(buffer1)
-                buffer3 = buffer2[-1]
-                res = [6, ibuffer1*100 + buffer3]
+                res = [6, (13 - buffer1)*100 + 13 - buffer2[0]]
             else:
-                buffer3 = sum(np.where(total_num == 1)[0][-2:])
-                res = [3, buffer1*100 + buffer3]
+                buffer3 = sum(np.where(total_num == 1)[0][:2])
+                res = [3, (13 - buffer1)*100 + 13*2 - buffer3]
         elif np.max(total_num, axis=0) == 2:
             buffer1 = np.where(total_num == 2)[0]
-            buffer2 = np.where(total_num >= 1)[0]
+            buffer2 = np.where(total_num >= 1)[0].tolist()
             if len(buffer1) >= 2:
-                for i in buffer1[-2:]:
+                for i in buffer1[:2]:
                     buffer2.remove(i)
-                res = [2, sum(buffer1[-2:])*100 + buffer2[-1]]
+                res = [2, (13*2 - sum(buffer1[:2]))*100 + 13 - buffer2[0]]
             else:
-                buffer2.remove(buffer1[-1])
-                res = [1, buffer1[0]*100 + sum(buffer2[-3:])]
+                buffer2.remove(buffer1[0])
+                res = [1, buffer1[0]*100 + 13*3 - sum(buffer2[:3])]
         else:
             buffer1 = np.where(total_num == 1)[0]
-            res = [0, sum(buffer1[-3:])]
+            res = [0, 13*5 - sum(buffer1[:5])]
 
         total_suit = np.sum(total, axis=1)
         if res[0]<=3:
             if np.max(total_suit, axis=0) >= 5:
-                flush = total[total_suit == np.max(total_suit, axis=0)]
-                res = [5, sum(flush[-5:])]
-                buffer1 = flush
+                flush = total[total_suit == np.max(total_suit, axis=0)][0]
+                flush = np.where(flush == 1)[0]
+                res = [5, 13*5 - sum(flush[:5])]
+                buffer1 = total[total_suit == np.max(total_suit, axis=0)][0]
+                print(buffer1)  # [1 1 1 1 1 0 0 0 0 0 0 0 0]
             else:
                 buffer1 = np.array(np.where(total_num > 0, 1, 0))
+                print(buffer1)  # [1 1 1 1 1 1 0 0 0 1 0 0 0]
             buffer1 = np.concatenate([buffer1, buffer1], 0)[:14]
-            buffer1 = buffer1[::-1]
+            buffer1 = buffer1
             for i in range(len(buffer1)-4):
                 if np.sum(buffer1[i:i+5]) == 5:
                     if res[0]==5:
-                        res = [8, 14-i]
+                        res = [8, 13-i]
                     else:
-                        res = [4, 14-i]
+                        res = [4, 13-i]
                     break
         return res
 

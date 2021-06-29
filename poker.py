@@ -1,6 +1,7 @@
 
 
 import numpy as np
+import pandas as pd
 
 class Poker():
     def __init__(self):
@@ -12,6 +13,11 @@ class Poker():
             'flush', 'full house', 'quads', 'straight flush']
         self.SUIT = ['c', 'd', 'h', 's']
         self.NUMBER = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+
+        self.RANGE_PAIR = np.eye(13, dtype=bool)
+        self.RANGE_SUIT = ~np.tri(13, dtype=bool)
+        self.RANGE_OFFSUIT = np.tri(13, dtype=bool) ^ np.eye(13, dtype=bool)
+        self.PROB = self.RANGE_PAIR * 0.453 + self.RANGE_SUIT * 0.302 + self.RANGE_OFFSUIT * 0.905
 
     def str2arr(self, cards):
         arr = np.zeros((4,13), dtype=int)
@@ -73,10 +79,10 @@ class Poker():
                 flush = np.where(flush == 1)[0]
                 res = [5, 13*5 - sum(flush[:5])]
                 buffer1 = total[total_suit == np.max(total_suit, axis=0)][0]
-                print(buffer1)  # [1 1 1 1 1 0 0 0 0 0 0 0 0]
+                print(buffer1)
             else:
                 buffer1 = np.array(np.where(total_num > 0, 1, 0))
-                print(buffer1)  # [1 1 1 1 1 1 0 0 0 1 0 0 0]
+                print(buffer1)
             buffer1 = np.concatenate([buffer1, buffer1], 0)[:14]
             buffer1 = buffer1
             for i in range(len(buffer1)-4):
@@ -87,6 +93,20 @@ class Poker():
                         res = [4, 13-i]
                     break
         return res
+
+    def set_player(self, arr):
+        return arr * self.PROB
+
+    def create_df(self, prb):
+        hit = np.sum(prb*(~self.RANGE_PAIR), axis=0) + np.sum(prb*(~self.RANGE_PAIR), axis=1)
+        df = pd.DataFrame({'hit':hit}, index=self.NUMBER)
+        board_sum = np.sum(self.board, axis=0)
+        single = np.sum(prb*(~self.RANGE_PAIR), axis=0) + np.sum(prb*(~self.RANGE_PAIR), axis=1)
+        df['quads'] = np.diag(prb) * np.where(board_sum==2, 1, 0) + single * np.where(board_sum==3, 1, 0)
+        print('pair', np.diag(prb) * np.where(board_sum==2, 1, 0))
+        df['3 of a kind'] = np.diag(prb) * np.where(board_sum==1, 1, 0) + single * np.where(board_sum==2, 1, 0)
+        print('3:', np.diag(prb) * np.where(board_sum==1, 1, 0))
+        return df
 
 
 if __name__ == '__main__':

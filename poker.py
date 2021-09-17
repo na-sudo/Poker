@@ -20,6 +20,14 @@ class Poker():
         self.PROB = self.RANGE_PAIR * 0.453 + self.RANGE_SUIT * 0.302 + self.RANGE_OFFSUIT * 0.905
 
     def str2arr(self, cards):
+        """文字列からnumpy配列へ変換
+
+        Args:
+            cards (str): ハンドやボード(記法:Ah)
+
+        Returns:
+            numpy array: (4,13)の配列
+        """
         arr = np.zeros((4,13), dtype=int)
         for i in range(0, len(cards), 2):
             s = self.SUIT.index(cards[i+1].lower())
@@ -28,12 +36,30 @@ class Poker():
         return arr
 
     def set_hand(self, cards :str):
+        """文字列からハンドをセットする。
+
+        Args:
+            cards (str): ハンドやボード(記法:Ah)
+        """
         self.hand = self.str2arr(cards)
 
     def set_board(self, cards :str):
+        """文字列からボードをセット
+
+        Args:
+            cards (str): ハンドやボード(記法:Ah)
+        """
         self.board = self.str2arr(cards)
 
     def handrank(self, hand='hand string'):
+        """ハンドとボードからその手の強さを調べる。handに文字列を指定するとそのハンドでの強さを調べる。
+
+        Args:
+            hand (str, optional): 調べたいハンドの文字列. Defaults to 'hand string'.
+
+        Returns:
+            list: ハンドの強さ。[役, 役の中での強さ]
+        """
         if hand == 'hand string':
             hand = self.hand
         else:
@@ -95,9 +121,25 @@ class Poker():
         return res
 
     def set_player(self, arr):
+        """ハンドレンジの配列0,1に確率をかけて分布をつくる。
+
+        Args:
+            arr (numpy array): (13, 13)の配列0,1に対応
+
+        Returns:
+            numpy array: (13, 13)の配列それぞれの確率。
+        """
         return arr * self.PROB
 
     def create_df(self, prb):
+        """ハンドレンジの確率からhit, pair, 3 of a kind, quadsなどの役の存在確率を出す。pandas dataframeで返す。
+
+        Args:
+            prb (numpy array): (13, 13)の配列0~1の確率に対応。
+
+        Returns:
+            pandas dataframe: 各役の存在確率のdataframe
+        """
         hit = np.sum(prb*(~self.RANGE_PAIR), axis=0) + np.sum(prb*(~self.RANGE_PAIR), axis=1)
         df = pd.DataFrame({'hit or pair':hit}, index=self.NUMBER)
         board_sum = np.sum(self.board, axis=0)

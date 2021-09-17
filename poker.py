@@ -103,9 +103,9 @@ class Poker():
         board_sum = np.sum(self.board, axis=0)
         single = np.sum(prb*(~self.RANGE_PAIR), axis=0) + np.sum(prb*(~self.RANGE_PAIR), axis=1)
         df['quads'] = np.diag(prb) * np.where(board_sum==2, 1, 0) + single * np.where(board_sum==3, 1, 0)
-        print('pair', np.diag(prb) * np.where(board_sum==2, 1, 0))
+        # print('pair', np.diag(prb) * np.where(board_sum==2, 1, 0))
         df['3 of a kind'] = np.diag(prb) * np.where(board_sum==1, 1, 0) + single * np.where(board_sum==2, 1, 0)
-        print('3:', np.diag(prb) * np.where(board_sum==1, 1, 0))
+        # print('3:', np.diag(prb) * np.where(board_sum==1, 1, 0))
         return df
 
 

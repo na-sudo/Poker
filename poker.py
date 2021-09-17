@@ -22,8 +22,8 @@ class Poker():
     def str2arr(self, cards):
         arr = np.zeros((4,13), dtype=int)
         for i in range(0, len(cards), 2):
-            s = self.SUIT.index(cards[i+1])
-            n = self.NUMBER.index(cards[i])
+            s = self.SUIT.index(cards[i+1].lower())
+            n = self.NUMBER.index(cards[i].upper())
             arr[s, n] = 1
         return arr
 

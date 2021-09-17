@@ -56,15 +56,12 @@ def main():
     hero_pos = input('HERO (BTN or BB):')
     if hero_pos == 'BTN' or hero_pos == 'btn':
         hero_pos = 'BTN'
+        villan_pos = 'BB'
+
     else:
         hero_pos = 'BB'
-    villan_pos = input('VILLAN (Those who are not heroes):')
-    if villan_pos == '':
-        if villan_pos == 'BTN':
-            villan_pos = 'BB'
-        else:
-            villan_pos = 'BTN'
-    print('BTNopen')
+        villan_pos = 'BTN'
+
     act_str = input('BB 3bet or call :')
     if act_str == '3bet' or act_str == '3':
         act = 3
@@ -98,27 +95,6 @@ def main():
     print('villan_df', villan_pos)
     print(villan_df)
 
-    '''a_hit = np.sum(a_prb*(~pair), axis=0) + np.sum(a_prb*(~pair), axis=1)
-    b_hit = np.sum(b_prb*(~pair), axis=0) + np.sum(b_prb*(~pair), axis=1)
-    df_a = pd.DataFrame({'hit':a_hit}, index=li)
-    df_b = pd.DataFrame({'hit':b_hit}, index=li)
-
-    board_num = np.sum(po.board, axis=0)
-    single = np.sum(a_prb*(~pair), axis=0) + np.sum(a_prb*(~pair), axis=1)
-    df_a['quads'] = np.diag(a_prb) * np.where(board_num==2, 1, 0)
-    df_a['quads'] = single * np.where(board_num==3, 1, 0)
-    #df_a['set'] = np.diag(a_prb) * np.where(board_num==1, 1, 0)
-    #df_a['trips'] = single * np.where(board_num==2, 1, 0)
-    df_a['3 of a kind'] = np.diag(a_prb) * np.where(board_num==1, 1, 0) + single * np.where(board_num==2, 1, 0)
-
-    single = np.sum(b_prb*(~pair), axis=0) + np.sum(b_prb*(~pair), axis=1)
-    df_b['quads'] = np.diag(b_prb) * np.where(board_num==2, 1, 0)
-    df_b['quads'] = single * np.where(board_num==3, 1, 0)
-    #df_b['set'] = np.diag(b_prb) * np.where(board_num==1, 1, 0)
-    #df_b['trips'] = single * np.where(board_num==2, 1, 0)
-    df_b['3 of a kind'] = np.diag(b_prb) * np.where(board_num==1, 1, 0) + single * np.where(board_num==2, 1, 0)
-    print(df_a)
-    print(df_b)'''
 
 
 if __name__ == '__main__':

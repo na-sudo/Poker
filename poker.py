@@ -99,7 +99,7 @@ class Poker():
 
     def create_df(self, prb):
         hit = np.sum(prb*(~self.RANGE_PAIR), axis=0) + np.sum(prb*(~self.RANGE_PAIR), axis=1)
-        df = pd.DataFrame({'hit':hit}, index=self.NUMBER)
+        df = pd.DataFrame({'hit or pair':hit}, index=self.NUMBER)
         board_sum = np.sum(self.board, axis=0)
         single = np.sum(prb*(~self.RANGE_PAIR), axis=0) + np.sum(prb*(~self.RANGE_PAIR), axis=1)
         df['quads'] = np.diag(prb) * np.where(board_sum==2, 1, 0) + single * np.where(board_sum==3, 1, 0)
